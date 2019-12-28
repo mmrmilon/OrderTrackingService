@@ -45,6 +45,7 @@ namespace OrderTrackingService
             services.AddRazorPages();
 
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<ISpreadsheetRepository, SpreadsheetRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

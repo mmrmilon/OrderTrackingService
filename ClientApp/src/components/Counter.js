@@ -18,7 +18,7 @@ export class Counter extends Component {
 
     async syncSpreadsheetData() {
         const token = await authService.getAccessToken();
-        const response = await fetch('Spreadsheet/SyncToDb', {
+        const response = await fetch('api/Spreadsheet/SyncToDb', {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();

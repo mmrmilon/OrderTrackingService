@@ -1,4 +1,5 @@
-﻿using OrderTrackingService.Models;
+﻿using OrderTrackingService.Dtos;
+using OrderTrackingService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace OrderTrackingService.Repository.Interface
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<Orders>> GetAsync();
+        Task<IEnumerable<OrderDto>> GetAsync();
 
         Task<Orders> GetAsync(Guid orderId);
 

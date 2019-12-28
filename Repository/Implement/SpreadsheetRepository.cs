@@ -43,34 +43,57 @@ namespace OrderTrackingService.Repository.Implement
             });
         }
 
-        public Task<SyncDetails> SyncSpreadsheetDataToDb()
+        public async Task<SyncDetails> SyncSpreadsheetDataToDb()
         {
-            var range = $"{sheet}!A:F";
-            SpreadsheetsResource.ValuesResource.GetRequest request =
-                    _service.Spreadsheets.Values.Get(spreadsheetId, range);
-
-            var response = request.Execute();
-            IList<IList<object>> values = response.Values;
-            if (values != null && values.Count > 0)
+            try
             {
-                foreach (var row in values)
+                int totalSync = 0;
+                var range = $"{sheet}!A:I";
+                var request = _service.Spreadsheets.Values.Get(spreadsheetId, range);
+
+                var response = request.Execute();
+                IList<IList<object>> list = response.Values;
+
+                foreach (var row in list.Skip(1))
                 {
-                    // Print columns A to F, which correspond to indices 0 and 4.
-                    Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", row[0], row[1], row[2], row[3], row[4], row[5]);
+                    var item = new Orders
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderDate = DateTime.Parse(string.Format("{0}", row[0])),
+                        OrderNumber = string.Format("{0}", row[1]),
+                        CutomerName = string.Format("{0}", row[2]),
+                        Address = string.Format("{0}", row[3]),
+                        TrackingStatus = string.Format("{0}", row[4]),
+                        StockKeepingUnit = string.Format("{0}", row[5]),
+                        Carrier = string.Format("{0}", row[6]),
+                        TrackingNumber = string.Format("{0}", row[7]),
+                        ShipDate = string.Format("{0}", row[8]).ToUpper().Equals("N/A") ? (DateTime?)null : DateTime.Parse(string.Format("{0}", row[8]))
+                    };
+
+                    context.Orders.Add(item);
+                    await context.SaveChangesAsync();
+                    totalSync++;
                 }
-            }
-            else
-            {
-                Console.WriteLine("No data found.");
-            }
 
-            var result = new SyncDetails
-            {
-                TotalFetch = 0,
-                TotalSync = 0
-            };
+                var result = new SyncDetails
+                {
+                    TotalFetch = list.Count,
+                    TotalSync = totalSync,
+                    errorMessage = string.Empty
+                };
 
-            return Task.FromResult(result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                var result = new SyncDetails
+                {
+                    TotalFetch = 0,
+                    TotalSync = 0,
+                    errorMessage = ex.GetBaseException().Message
+                };
+                return result;
+            }
         }
     }
 }
