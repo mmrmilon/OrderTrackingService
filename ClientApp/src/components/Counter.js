@@ -1,31 +1,43 @@
 import React, { Component } from 'react';
+import authService from './api-authorization/AuthorizeService'
 
 export class Counter extends Component {
-  static displayName = Counter.name;
+    static displayName = Counter.name;
 
-  constructor(props) {
-    super(props);
-    this.state = { currentCount: 0 };
-    this.incrementCounter = this.incrementCounter.bind(this);
-  }
+    constructor(props) {
+        super(props);
+        this.state = { currentCount: 0 };
+        this.incrementCounter = this.incrementCounter.bind(this);
+    }
 
-  incrementCounter() {
-    this.setState({
-      currentCount: this.state.currentCount + 1
-    });
-  }
+    incrementCounter() {
+        this.setState({
+            currentCount: this.state.currentCount + 1
+        });
+    }
 
-  render() {
-    return (
-      <div>
-        <h1>Counter</h1>
+    async syncSpreadsheetData() {
+        const token = await authService.getAccessToken();
+        const response = await fetch('Spreadsheet/SyncToDb', {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        this.setState({ forecasts: data, loading: false });
+    }
 
-        <p>This is a simple example of a React component.</p>
+    render() {
+        return (
+            <div>
+                <h1>Counter</h1>
 
-        <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
+                <p>This is a simple example of a React component.</p>
 
-        <button className="btn btn-primary" onClick={this.incrementCounter}>Increment</button>
-      </div>
-    );
-  }
+                <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
+
+                <button className="btn btn-primary" onClick={this.incrementCounter}>Increment</button>
+
+                <button className="btn btn-primary" onClick={this.syncSpreadsheetData}>Sync Spreadsheet Data</button>
+            </div>
+        );
+    }
 }
