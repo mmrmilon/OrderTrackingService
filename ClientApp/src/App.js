@@ -3,6 +3,7 @@ import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { Order } from './components/Order';
+import { OrderEdit } from './components/OrderEdit';
 import { SyncData } from './components/SyncData';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
@@ -22,6 +23,7 @@ export default class App extends Component {
                 <Route path='/counter' component={Counter} />
                 <AuthorizeRoute path='/syncdata' component={SyncData} />
                 <AuthorizeRoute path='/order' component={Order} />
+                <AuthorizeRoute path='/orderdetails/edit/:id' component={OrderEdit} />
                 <AuthorizeRoute path='/fetch-data' component={FetchData} />
                 <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
             </Layout>

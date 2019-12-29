@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import 'font-awesome/css/font-awesome.min.css';
 import authService from './api-authorization/AuthorizeService'
 
 export class Order extends Component {
@@ -26,8 +27,8 @@ export class Order extends Component {
         return (
             orders.map((item, index) => {
                 return (<tr key={index + 1}>
-                    <td className="align-middle" style={{ width: '10%' }}>
-                        <Link to={'/management/clientdetails/' + item.id} className="btn btn-primary btn-sm" href="#"><span className="glyphicon glyphicon-edit" aria-hidden="true"></span>&nbsp;Edit</Link>
+                    <td className="align-middle" style={{ width: '20%' }}>
+                        <Link to={'/orderdetails/edit/' + item.id} className="link" href="#"><span className="fa fa-pencil-square-o">&nbsp;Edit</span></Link>
                     </td>
                     <td className="align-middle">{item.orderDate}</td>
                     <td className="align-middle">{item.orderNumber}</td>
