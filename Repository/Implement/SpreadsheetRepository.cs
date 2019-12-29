@@ -10,6 +10,7 @@ using OrderTrackingService.Models;
 using OrderTrackingService.Repository.Interface;
 using System.Linq;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
 
 namespace OrderTrackingService.Repository.Implement
 {
@@ -43,7 +44,11 @@ namespace OrderTrackingService.Repository.Implement
             });
         }
 
-        public async Task<SyncDetails> SyncSpreadsheetDataToDb()
+        /// <summary>
+        /// https://github.com/borisdj/EFCore.BulkExtensions
+        /// </summary>
+        /// <returns></returns>
+        public Task<SyncDetails> SyncSpreadsheetDataToDb()
         {
             try
             {
@@ -53,7 +58,7 @@ namespace OrderTrackingService.Repository.Implement
 
                 var response = request.Execute();
                 IList<IList<object>> list = response.Values;
-
+                var records = new List<Orders>();
                 foreach (var row in list.Skip(1))
                 {
                     var item = new Orders
@@ -69,20 +74,53 @@ namespace OrderTrackingService.Repository.Implement
                         TrackingNumber = string.Format("{0}", row[7]),
                         ShipDate = string.Format("{0}", row[8]).ToUpper().Equals("N/A") ? (DateTime?)null : DateTime.Parse(string.Format("{0}", row[8]))
                     };
-
-                    context.Orders.Add(item);
-                    await context.SaveChangesAsync();
+                    records.Add(item);
                     totalSync++;
                 }
+
+                //Update into Order table
+                var updateRecords = (from r in records
+                                     join o in context.Orders on r.OrderNumber equals o.OrderNumber
+                                     select new Orders
+                                     {
+                                         Id = o.Id,
+                                         OrderDate = r.OrderDate,
+                                         OrderNumber = o.OrderNumber,
+                                         CutomerName = r.CutomerName,
+                                         Address = r.Address,
+                                         TrackingStatus = r.TrackingStatus,
+                                         StockKeepingUnit = r.StockKeepingUnit,
+                                         Carrier = r.Carrier,
+                                         TrackingNumber = r.TrackingNumber,
+                                         ShipDate = r.ShipDate
+                                     }).ToList();
+
+                //context.Database.EnsureCreated();
+                context.ChangeTracker.AutoDetectChangesEnabled = true;
+                context.BulkUpdate(updateRecords);
+                
+                //Insert into Order table
+                var orderNumbers = updateRecords.Select(x => x.OrderNumber).Distinct().ToList();
+                var insertRecords = records.Where(x => !orderNumbers.Contains(x.OrderNumber))
+                    .Select(x =>
+                    {
+                        x.Id = Guid.NewGuid();
+                        return x;
+                    }).ToList();
+
+                context.ChangeTracker.AutoDetectChangesEnabled = true;
+                context.BulkInsert(insertRecords);
 
                 var result = new SyncDetails
                 {
                     TotalFetch = list.Count,
                     TotalSync = totalSync,
-                    errorMessage = string.Empty
+                    Status = "Succeed",
+                    ErrorMessage = "Successfully sync items " + string.Format("{0}", totalSync) + " of " 
+                    + string.Format("{0}", list.Count - 1)+", "+ updateRecords.Count + " items updated, " + insertRecords.Count+" items added."
                 };
 
-                return result;
+                return Task.FromResult(result);
             }
             catch (Exception ex)
             {
@@ -90,9 +128,10 @@ namespace OrderTrackingService.Repository.Implement
                 {
                     TotalFetch = 0,
                     TotalSync = 0,
-                    errorMessage = ex.GetBaseException().Message
+                    Status = "Failed",
+                    ErrorMessage = ex.GetBaseException().Message
                 };
-                return result;
+                return Task.FromResult(result);
             }
         }
     }

@@ -28,9 +28,16 @@ namespace OrderTrackingService.Controllers
         [Route("GetAll")]
         public async Task<IActionResult> Get()
         {
-            var result = await _orderRepository.GetAsync();
+            try
+            {
+                var result = await _orderRepository.GetAsync();
 
-            return Ok(result);
+                return Ok(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { success = false, successMessage = ex.GetBaseException().Message });
+            }
         }
 
         [HttpGet]

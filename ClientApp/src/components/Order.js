@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import authService from './api-authorization/AuthorizeService'
 
 export class Order extends Component {
-    static displayName = Order.name;
-
     constructor(props) {
         super(props);
         this.state = { orders: [], loading: true };
@@ -13,61 +12,73 @@ export class Order extends Component {
         this.populateOrderData();
     }
 
-    static renderOrderTable(orders) {
-        return (
-            <table className='table table-bordered table-responsive' aria-labelledby="tabelLabel">
-                <thead>
-                    <tr>
-                        <th>Order Date</th>
-                        <th>Order Number</th>
-                        <th>Cutomer Name</th>
-                        <th>Address</th>
-                        <th>Tracking Status</th>
-                        <th>Stock Keeping Unit</th>
-                        <th>Carrier</th>
-                        <th>Tracking Number</th>
-                        <th>Ship Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map(item =>
-                        <tr key={item.UniqueKey}>
-                            <td>{item.OrderDate}</td>
-                            <td>{item.OrderNumber}</td>
-                            <td>{item.CutomerName}</td>
-                            <td>{item.Address}</td>
-                            <td>{item.TrackingStatus}</td>
-                            <td>{item.StockKeepingUnit}</td>
-                            <td>{item.Carrier}</td>
-                            <td>{item.TrackingNumber}</td>
-                            <td>{item.ShipDate}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        );
-    }
-
-    render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : Order.renderOrderTable(this.state.orders);
-
-        return (
-            <div>
-                <h1 id="tabelLabel" >Order Listing</h1>
-                {contents}
-            </div>
-        );
-    }
-
     async populateOrderData() {
         const token = await authService.getAccessToken();
         const response = await fetch('api/Order/GetAll', {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
-        const data = await response.json();
+        const records = await response.json();
+        console.log(records.data);
+        this.setState({ orders: records.data, loading: false });
+    }
 
-        this.setState({ orders: data, loading: false });
+    static renderOrderTable(orders) {
+        return (
+            orders.map((item, index) => {
+                return (<tr key={index + 1}>
+                    <td className="align-middle" style={{ width: '10%' }}>
+                        <Link to={'/management/clientdetails/' + item.id} className="btn btn-primary btn-sm" href="#"><span className="glyphicon glyphicon-edit" aria-hidden="true"></span>&nbsp;Edit</Link>
+                    </td>
+                    <td className="align-middle">{item.orderDate}</td>
+                    <td className="align-middle">{item.orderNumber}</td>
+                    <td className="align-middle">{item.cutomerName}</td>
+                    <td className="align-middle">{item.address}</td>
+                    <td className="align-middle">{item.trackingStatus}</td>
+                    <td className="align-middle">{item.stockKeepingUnit}</td>
+                    <td className="align-middle">{item.carrier}</td>
+                    <td className="align-middle">{item.trackingNumber}</td>
+                    <td className="align-middle">{item.shipDate}</td>
+                </tr>);
+            })
+        );
+    }
+
+    render() {
+        let contents = this.state.loading
+            ? <tr><td colSpan="10" className="text-center text-success"><p><em>Loading...</em></p></td></tr>
+            : Order.renderOrderTable(this.state.orders);
+
+        return (
+            <React.Fragment>
+                <fieldset>
+                    <legend>
+                        Order Listing
+                    </legend>
+                </fieldset>
+                <div className="row">
+                    <div className="col-md-12">
+                        <table className='table table-bordered table-responsive font-size-12' aria-labelledby="tabelLabel">
+                            <thead>
+                                <tr>
+                                    <th className="text-nowrap"></th>
+                                    <th className="text-nowrap">Order Date</th>
+                                    <th className="text-nowrap">Order Number</th>
+                                    <th className="text-nowrap">Cutomer Name</th>
+                                    <th className="text-nowrap">Address</th>
+                                    <th className="text-nowrap">Tracking Status</th>
+                                    <th className="text-nowrap">Stock Keeping Unit</th>
+                                    <th className="text-nowrap">Carrier</th>
+                                    <th className="text-nowrap">Tracking Number</th>
+                                    <th className="text-nowrap">Ship Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {contents}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </React.Fragment>
+        );
     }
 }

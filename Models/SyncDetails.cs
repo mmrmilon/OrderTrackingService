@@ -11,6 +11,8 @@ namespace OrderTrackingService.Models
 
         public int TotalSync { get; set; }
 
-        public string errorMessage { get; set; }
+        public string Status { get; set; }
+
+        public string ErrorMessage { get; set; }
     }
 }

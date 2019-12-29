@@ -12,3 +12,7 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.font-size-12 {
+    font-size: 12px !important;
+}

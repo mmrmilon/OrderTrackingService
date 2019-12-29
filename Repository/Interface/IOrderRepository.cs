@@ -9,7 +9,7 @@ namespace OrderTrackingService.Repository.Interface
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<OrderDto>> GetAsync();
+        Task<IEnumerable<Orders>> GetAsync();
 
         Task<Orders> GetAsync(Guid orderId);
 
