@@ -11,12 +11,12 @@ namespace OrderTrackingService.Repository.Interface
     {
         Task<IEnumerable<Orders>> GetAsync();
 
-        Task<Orders> GetAsync(Guid orderId);
+        Task<Orders> GetAsync(long orderId);
 
         Task<Orders> Insert(Orders model);
 
         Task<Orders> Update(Orders model);
 
-        Task<bool> Delete(Guid orderId);
+        Task<bool> Delete(long orderId);
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrackingService.Models
 {
     public class Orders
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        [Key]
+        public long Id { get; set; }
 
         public DateTime OrderDate { get; set; }
 

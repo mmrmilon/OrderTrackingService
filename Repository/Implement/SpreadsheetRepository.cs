@@ -63,7 +63,6 @@ namespace OrderTrackingService.Repository.Implement
                 {
                     var item = new Orders
                     {
-                        Id = Guid.NewGuid(),
                         OrderDate = DateTime.Parse(string.Format("{0}", row[0])),
                         OrderNumber = string.Format("{0}", row[1]),
                         CutomerName = string.Format("{0}", row[2]),
@@ -104,7 +103,6 @@ namespace OrderTrackingService.Repository.Implement
                 var insertRecords = records.Where(x => !orderNumbers.Contains(x.OrderNumber))
                     .Select(x =>
                     {
-                        x.Id = Guid.NewGuid();
                         return x;
                     }).ToList();
 

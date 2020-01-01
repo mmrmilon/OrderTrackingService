@@ -42,7 +42,7 @@ namespace OrderTrackingService.Controllers
 
         [HttpGet]
         [Route("GetBy/{orderId}")]
-        public async Task<IActionResult> Get(Guid orderId)
+        public async Task<IActionResult> Get(long orderId)
         {
             var result = await _orderRepository.GetAsync(orderId);
 
@@ -65,7 +65,7 @@ namespace OrderTrackingService.Controllers
 
         [HttpDelete]
         [Route("Delete/{orderId}")]
-        public async Task<IActionResult> Delete(Guid orderId)
+        public async Task<IActionResult> Delete(long orderId)
         {
             return Ok(await _orderRepository.Delete(orderId));
         }

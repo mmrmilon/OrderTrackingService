@@ -24,7 +24,7 @@ namespace OrderTrackingService.Repository.Implement
             return await context.Orders.OrderByDescending(x => x.Id).ToListAsync();
         }
 
-        public async Task<Orders> GetAsync(Guid orderId)
+        public async Task<Orders> GetAsync(long orderId)
         {
             return await context.Orders.Where(x => x.Id == orderId).FirstOrDefaultAsync();
         }
@@ -44,7 +44,7 @@ namespace OrderTrackingService.Repository.Implement
             return model;
         }
 
-        public async Task<bool> Delete(Guid orderId)
+        public async Task<bool> Delete(long orderId)
         {
             var result = context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
             if (result != null)
