@@ -47,6 +47,7 @@ namespace OrderTrackingService
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<ISpreadsheetRepository, SpreadsheetRepository>();
 
+            services.AddMvc();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -78,11 +79,16 @@ namespace OrderTrackingService
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller}/{action=Index}/{id?}");
+            //    endpoints.MapRazorPages();
+            //});
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
 
