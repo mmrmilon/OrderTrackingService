@@ -21,14 +21,14 @@ export class NavMenu extends Component {
             collapsed: !this.state.collapsed
         });
     }
-
+    
     render() {
         console.log('Display Name: ' + this.displayName);
         return (
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
                     <Container>
-                        <NavbarBrand tag={Link} to="/">Order Tracking Service</NavbarBrand>
+                        <NavbarBrand tag={Link} to="/"><i className="fa fa-truck fa-flip-horizontal"></i>&nbsp;Order Tracking</NavbarBrand>
                         <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                             <ul className="navbar-nav flex-grow">
