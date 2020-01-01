@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
@@ -20,13 +20,162 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <style type="text/css">
+        #pre-bootstrap {
+            background-color: #262626;
+            bottom: 0px;
+            left: 0px;
+            position: fixed;
+            right: 0px;
+            top: 0px;
+            z-index: 999999;
+        }
+        #pre-bootstrap div.messaging {
+            color: #FFFFFF;
+            font-family: monospace;
+            left: 0px;
+            margin-top: -107px;
+            position: absolute;
+            right: 0px;
+            text-align: center;
+            top: 50%;
+        }
+        #pre-bootstrap h1 {
+            font-size: 26px;
+            line-height: 35px;
+            margin: 0px 0px 20px 0px;
+        }
+        #pre-bootstrap p {
+            font-size: 18px;
+            line-height: 14px;
+            margin: 0px 0px 0px 0px;
+        }
+        .prebootShow {
+            opacity: 1 !important;
+        }
+        .prebootStep {
+            opacity: 0;
+            transition: .5s ease-in-out all;
+        }
+        /*loader*/
+        /* Absolute Center Spinner */
+        .cs-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .cs-loader-inner {
+            transform: translateY(-50%);
+            top: 60%;
+            position: absolute;
+            width: calc(100% - 200px);
+            color: #FFF;
+            padding: 0 100px;
+            text-align: center;
+        }
+        .cs-loader-inner label {
+            font-size: 20px;
+            opacity: 0;
+            display: inline-block;
+            color: gray;
+        }
+        @keyframes lol {
+            0% {
+                opacity: 0;
+                transform: translateX(-300px);
+            }
+
+            33% {
+                opacity: 1;
+                transform: translateX(0px);
+            }
+
+            66% {
+                opacity: 1;
+                transform: translateX(0px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(300px);
+            }
+        }
+        @-webkit-keyframes lol {
+            0% {
+                opacity: 0;
+                -webkit-transform: translateX(-300px);
+            }
+
+            33% {
+                opacity: 1;
+                -webkit-transform: translateX(0px);
+            }
+
+            66% {
+                opacity: 1;
+                -webkit-transform: translateX(0px);
+            }
+
+            100% {
+                opacity: 0;
+                -webkit-transform: translateX(300px);
+            }
+        }
+        .cs-loader-inner label:nth-child(6) {
+            -webkit-animation: lol 3s infinite ease-in-out;
+            animation: lol 3s infinite ease-in-out;
+        }
+        .cs-loader-inner label:nth-child(5) {
+            -webkit-animation: lol 3s 100ms infinite ease-in-out;
+            animation: lol 3s 100ms infinite ease-in-out;
+        }
+        .cs-loader-inner label:nth-child(4) {
+            -webkit-animation: lol 3s 200ms infinite ease-in-out;
+            animation: lol 3s 200ms infinite ease-in-out;
+        }
+        .cs-loader-inner label:nth-child(3) {
+            -webkit-animation: lol 3s 300ms infinite ease-in-out;
+            animation: lol 3s 300ms infinite ease-in-out;
+        }
+        .cs-loader-inner label:nth-child(2) {
+            -webkit-animation: lol 3s 400ms infinite ease-in-out;
+            animation: lol 3s 400ms infinite ease-in-out;
+        }
+        .cs-loader-inner label:nth-child(1) {
+            -webkit-animation: lol 3s 500ms infinite ease-in-out;
+            animation: lol 3s 500ms infinite ease-in-out;
+        }
+    </style>
     <title>Order Tracking Service</title>
-  </head>
+</head>
   <body>
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="root"></div>
+    <div id="root">
+        <div id="pre-bootstrap">
+            <div class="messaging">
+                <h1>
+                    App is Loading...
+                </h1>
+                <div class="cs-loader">
+                    <div class="cs-loader-inner">
+                        <label>&#9679</label>
+                        <label>&#9679</label>
+                        <label>&#9679</label>
+                        <label>&#9679</label>
+                        <label>&#9679</label>
+                        <label>&#9679</label>
+                    </div>
+                </div>
+                <p>
+                    ORDER TRACKING SERVICCE - <span class="appName" style="font-style:italic">Order Tracking&nbsp;</span><span class="appName">App</span> &copy; <a href="http://www.cheesecakeict.com">www.chesecakeict.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

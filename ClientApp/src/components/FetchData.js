@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Demo from './demo';
 import authService from './api-authorization/AuthorizeService'
 
 export class FetchData extends Component {
@@ -43,13 +44,30 @@ export class FetchData extends Component {
       ? <p><em>Loading...</em></p>
       : FetchData.renderForecastsTable(this.state.forecasts);
 
-    return (
-      <div>
-        <h1 id="tabelLabel" >Weather forecast</h1>
-        <p>This component demonstrates fetching data from the server.</p>
-        {contents}
-      </div>
-    );
+      return (
+          <React.Fragment>
+              <fieldset>
+                  <legend>
+                      Material UI Table
+                    </legend>
+              </fieldset>
+              <div className="row">
+                  <div className="col-md-12">
+                      <Demo />
+                  </div>
+              </div>
+              <fieldset>
+                  <legend>
+                      Weather forecast
+                    </legend>
+              </fieldset>
+              <div className="row">
+                  <div className="col-md-12">
+                      {contents}
+                  </div>
+              </div>
+          </React.Fragment>
+      );
   }
 
   async populateWeatherData() {

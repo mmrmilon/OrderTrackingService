@@ -16,3 +16,24 @@ code {
 .font-size-12 {
     font-size: 12px !important;
 }
+.mb-10 {
+    margin-bottom:10px !important;
+}
+/*------------- Start Table CSS ----------*/
+.dataTables_wrapper, .dt-bootstrap4 {
+    font-size: 12px !important;
+}
+table > thead > tr > th {
+    white-space:nowrap !important;
+}
+table , tr , td {
+    /*white-space:nowrap !important;*/
+    vertical-align:middle !important;
+}
+select.custom-select {
+    margin-left: 0px !important;
+}
+.dataTables_filter, .dataTables_paginate {
+    float: right !important;
+}
+/*------------- End Table CSS ----------*/
