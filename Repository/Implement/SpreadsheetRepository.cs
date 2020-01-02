@@ -11,24 +11,22 @@ using OrderTrackingService.Repository.Interface;
 using System.Linq;
 using System.Threading.Tasks;
 using EFCore.BulkExtensions;
+using Microsoft.Extensions.Options;
 
 namespace OrderTrackingService.Repository.Implement
 {
     public class SpreadsheetRepository : ISpreadsheetRepository
     {
         private static readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
-        private const string applicationName = "SpreadsheetCrud";
-        private const string spreadsheetId = "1Axx5agQqkLMVoBd2Z_mOf5rOm0lzJUbSR8Ea4y_QNas";
-        private const string sheet = "Sheet1";
-        
+        private readonly SpreadsheetSettings _spreadsheetSettings;
         private static SheetsService _service;
         private readonly GoogleCredential credential;
-
         private readonly ApplicationDbContext context;
 
-        public SpreadsheetRepository(ApplicationDbContext context)
+        public SpreadsheetRepository(ApplicationDbContext context, IOptions<SpreadsheetSettings> spreadsheetSettings)
         {
             this.context = context;
+            _spreadsheetSettings = spreadsheetSettings.Value;
 
             using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
             {
@@ -40,7 +38,7 @@ namespace OrderTrackingService.Repository.Implement
             _service = new SheetsService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = applicationName,
+                ApplicationName = _spreadsheetSettings.ApplicationName,
             });
         }
 
@@ -50,14 +48,18 @@ namespace OrderTrackingService.Repository.Implement
         /// <returns></returns>
         public Task<SyncDetails> SyncSpreadsheetDataToDb()
         {
+            int totalFetch = 0;
+            int totalSync = 0;
+
             try
             {
-                int totalSync = 0;
-                var range = $"{sheet}!A:I";
-                var request = _service.Spreadsheets.Values.Get(spreadsheetId, range);
+                var range = $"{_spreadsheetSettings.SheetName}!{_spreadsheetSettings.ColumnRange}";
+                var request = _service.Spreadsheets.Values.Get(_spreadsheetSettings.SpreadsheetId, range);
 
                 var response = request.Execute();
                 IList<IList<object>> list = response.Values;
+                totalFetch = list.Count;
+
                 var records = new List<Orders>();
                 foreach (var row in list.Skip(1))
                 {
@@ -74,7 +76,6 @@ namespace OrderTrackingService.Repository.Implement
                         ShipDate = string.Format("{0}", row[8]).ToUpper().Equals("N/A") ? (DateTime?)null : DateTime.Parse(string.Format("{0}", row[8]))
                     };
                     records.Add(item);
-                    totalSync++;
                 }
 
                 //Update into Order table
@@ -97,7 +98,8 @@ namespace OrderTrackingService.Repository.Implement
                 //context.Database.EnsureCreated();
                 context.ChangeTracker.AutoDetectChangesEnabled = true;
                 context.BulkUpdate(updateRecords);
-                
+                totalSync += updateRecords.Count;
+
                 //Insert into Order table
                 var orderNumbers = updateRecords.Select(x => x.OrderNumber).Distinct().ToList();
                 var insertRecords = records.Where(x => !orderNumbers.Contains(x.OrderNumber))
@@ -108,6 +110,7 @@ namespace OrderTrackingService.Repository.Implement
 
                 context.ChangeTracker.AutoDetectChangesEnabled = true;
                 context.BulkInsert(insertRecords);
+                totalSync += insertRecords.Count;
 
                 var result = new SyncDetails
                 {
@@ -124,8 +127,8 @@ namespace OrderTrackingService.Repository.Implement
             {
                 var result = new SyncDetails
                 {
-                    TotalFetch = 0,
-                    TotalSync = 0,
+                    TotalFetch = totalFetch,
+                    TotalSync = totalSync,
                     Status = "Failed",
                     ErrorMessage = ex.GetBaseException().Message
                 };

@@ -32,6 +32,10 @@ namespace OrderTrackingService
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            //Register SpreadsheetSettings from appsettings.json
+            var spreadsheetSettings = Configuration.GetSection("SpreadsheetSettings");
+            services.Configure<SpreadsheetSettings>(spreadsheetSettings);
+
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
