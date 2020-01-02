@@ -19,6 +19,11 @@ code {
 .mb-10 {
     margin-bottom:10px !important;
 }
+
+.bg-color-1 {
+    background-color: #593196 !important;
+    color:#fff;
+}
 /*------------- Start Table CSS ----------*/
 .dataTables_wrapper, .dt-bootstrap4 {
     font-size: 12px !important;

@@ -9,6 +9,9 @@ npm install --save font-awesome
 ### Install react-table
 npm install react-table --save
 
+### ChartJS
+https://blog.bitsrc.io/customizing-chart-js-in-react-2199fa81530a
+
 ### Test Json Data
 http://jsonplaceholder.typicode.com/posts
 
