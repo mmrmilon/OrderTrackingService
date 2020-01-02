@@ -27,6 +27,9 @@ http://constituteweb.com/render-search-and-sort-react-table
 ### Deployment Note
 https://stackoverflow.com/questions/58135672/adding-identityserver-authentication-to-net-core-3-app-fails-with-key-type-not
 
+### ASP.NET Core Hosting Bundle
+https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-3.1
+
 ### IIS Self-Signed Certificate (See 5. IIS)
 https://medium.com/the-new-control-plane/generating-self-signed-certificates-on-windows-7812a600c2d8
 
